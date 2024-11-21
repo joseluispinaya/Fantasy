@@ -60,8 +60,9 @@ public partial class CountriesIndex
             }
             else
             {
-                var mensajeError = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync(Localizer["Error"], mensajeError, SweetAlertIcon.Error);
+                var messageError = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync(Localizer["Error"], Localizer[messageError!], SweetAlertIcon.Error);
+                //await SweetAlertService.FireAsync(Localizer["Error"], mensajeError, SweetAlertIcon.Error);
             }
             return;
         }
