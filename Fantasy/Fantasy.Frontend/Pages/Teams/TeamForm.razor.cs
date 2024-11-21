@@ -13,18 +13,18 @@ namespace Fantasy.Frontend.Pages.Teams;
 public partial class TeamForm
 {
     private EditContext editContext = null!;
+    private Country selectedCountry = new();
 
     protected override void OnInitialized()
     {
         editContext = new(TeamDTO);
     }
 
+
     [EditorRequired, Parameter] public TeamDTO TeamDTO { get; set; } = null!;
     [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
     [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
-
     public bool FormPostedSuccessfully { get; set; } = false;
-
     [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
     [Inject] private IStringLocalizer<Literals> Localizer { get; set; } = null!;
     [Inject] private IRepository Repository { get; set; } = null!;
@@ -91,5 +91,24 @@ public partial class TeamForm
         }
 
         context.PreventNavigation();
+    }
+
+    private async Task<IEnumerable<Country>> SearchCountry(string searchText, CancellationToken cancellationToken)
+    {
+        await Task.Delay(5);
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return countries!;
+        }
+
+        return countries!
+            .Where(x => x.Name.Contains(searchText, StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+    }
+
+    private void CountryChanged(Country country)
+    {
+        selectedCountry = country;
+        TeamDTO.CountryId = country.Id;
     }
 }
